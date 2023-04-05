@@ -6,14 +6,12 @@ import matplotlib.pyplot as plt
 from torchvision import transforms 
 import numpy as np
 
-IMG_SIZE = 64
-BATCH_SIZE = 128
-T = 300
 
-class Forward():
-    def __init__(self) -> None:
-    # Define beta schedule
-        self.betas = self.linear_beta_schedule(timesteps=T)
+class Diffusion():
+    def __init__(self, args) -> None:
+        # Define beta schedule
+        self.args = args
+        self.betas = self.linear_beta_schedule(timesteps=self.args.T)
 
         # Pre-calculate different terms for closed form
         self.alphas = 1. - self.betas
@@ -86,14 +84,14 @@ class Forward():
     @torch.no_grad()
     def sample_plot_image(self, model, epoch="sample", train="train"):
         # Sample noise
-        img_size = IMG_SIZE
+        img_size = self.args.img_size
         img = torch.randn((1, 3, img_size, img_size), device="cuda")
         plt.figure(figsize=(15,15))
         plt.axis('off')
         num_images = 10
-        stepsize = int(T/num_images)
+        stepsize = int(self.args.T/num_images)
 
-        for i in range(0,T)[::-1]:
+        for i in range(0,self.args.T)[::-1]:
             t = torch.full((1,), i, device="cuda", dtype=torch.long)
             img = self.sample_timestep(model, img, t)
             if i % stepsize == 0:
