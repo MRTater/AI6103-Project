@@ -2,9 +2,6 @@ import torch
 from torch import nn
 import math
 
-IMG_SIZE = 64
-BATCH_SIZE = 128
-T = 300
 
 class Block(nn.Module):
     def __init__(self, in_ch, out_ch, time_emb_dim, up=False):

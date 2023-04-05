@@ -7,10 +7,6 @@ from torch.utils.data import DataLoader
 from torchvision import transforms 
 
 
-IMG_SIZE = 64
-BATCH_SIZE = 128
-T = 300
-
 class PokemonDataset(torch.utils.data.Dataset):
     def __init__(self, root, transform = None, target_transform=None):
         # 初始化文件路径或文件名列表。
@@ -34,16 +30,16 @@ class PokemonDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.imagenames)
 
-def load_transformed_dataset():
+def load_transformed_dataset(img_size, bs):
     data_transforms = [
-        transforms.Resize((IMG_SIZE, IMG_SIZE)),
+        transforms.Resize((img_size, img_size)),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(), # Scales data into [0,1] 
         transforms.Lambda(lambda t: (t * 2) - 1) # Scale between [-1, 1] 
     ]
     data_transform = transforms.Compose(data_transforms)
     data = PokemonDataset("/home/msai/luoy0043/workspace/6103/project", transform=data_transform)
-    dataloader = DataLoader(data, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
+    dataloader = DataLoader(data, batch_size=bs, shuffle=True, drop_last=True)
     return dataloader
 
 
