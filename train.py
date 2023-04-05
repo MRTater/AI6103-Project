@@ -2,9 +2,9 @@ import os
 import torch
 import torch.nn.functional as F
 from torch.optim import Adam
-from diffusion import SimpleUnet
+from project.Unet import SimpleUnet
 from dataloader import load_transformed_dataset
-from utils import Forward, show_tensor_image
+from project.diffusion import Forward, show_tensor_image
 
 IMG_SIZE = 64
 BATCH_SIZE = 128

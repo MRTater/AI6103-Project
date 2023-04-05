@@ -1,8 +1,8 @@
 import torch
 import matplotlib.pyplot as plt
 import numpy as np
-from diffusion import SimpleUnet
-from utils import Forward
+from project.Unet import SimpleUnet
+from project.diffusion import Forward
 
 model = SimpleUnet()
 model.to("cuda")
