@@ -3,9 +3,11 @@ pokemon/
 pokemon_jpg/
 result/
 __pycache__/
+dataset/
 
 
 archive.zip
+pokemon-generation-one.zip
 diffusion_pokemon_test.out
 diffusion_pokemon.out
 error.err

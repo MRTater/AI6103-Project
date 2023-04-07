@@ -12,4 +12,8 @@ module load anaconda
 eval "$(conda shell.bash hook)" 
 conda activate diffusionsdf
 python train.py \
---epochs 100
+--img_size 256 \
+--batch_size 16 \
+--T 1000 \
+--dataset "/home/msai/luoy0043/workspace/6103/project/dataset" \
+--epochs 2000
