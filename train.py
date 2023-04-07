@@ -1,6 +1,7 @@
 import os
 import torch
 import torch.nn.functional as F
+import tqdm
 from torch.optim import Adam
 from Unet import SimpleUnet
 from dataloader import load_transformed_dataset
@@ -9,13 +10,15 @@ from diffusion import Diffusion
 
 def main(args):
     diffusion = Diffusion(args)
-    dataloader = load_transformed_dataset(args.img_size, args.batch_size)
+    dataloader = load_transformed_dataset(args.dataset_folder, args.img_size, args.batch_size, args.num_workers)
     print("Dataset loaded")
     device = args.device
 
     model = SimpleUnet()
     print(model)
     print("Num params: ", sum(p.numel() for p in model.parameters()))
+    if args.model_path is not None:
+        model.load_state_dict(torch.load(args.model_path))
     model.to(device)
     optimizer = Adam(model.parameters(), lr=0.001)
     # epochs = 5000 # Try more!
@@ -48,6 +51,9 @@ if __name__ == '__main__':
     parser.add_argument('--img_size', type=int, default=64)
     parser.add_argument('--T', type=int, default=300)
     parser.add_argument('--epochs', type=int, default=500)
+    parser.add_argument('--dataset_folder', type=str, required=True)
+    parser.add_argument('--model_path', type=str, default=None)
+    parser.add_argument('--num_workers', type=int, default=2)
     args = parser.parse_args()
     print(args)
     main(args)

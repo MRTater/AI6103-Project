@@ -5,6 +5,7 @@ import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from torchvision import transforms 
 import numpy as np
+from pathlib import Path
 
 
 class Diffusion():
@@ -97,9 +98,10 @@ class Diffusion():
             if i % stepsize == 0:
                 plt.subplot(1, num_images, math.floor(i/stepsize+1))
                 show_tensor_image(img.detach().cpu())
-        img_folder = os.path.join("result", train)
+        img_folder = os.path.join("result", train) + "/"
         if not os.path.exists(img_folder):
-            os.mkdir(img_folder)
+            Path(img_folder).mkdir(parents=True, exist_ok=True)
+            # os.makedirs(img_folder)
         plt.savefig(os.path.join(img_folder, str(epoch)+".png"))
 
 def show_tensor_image(image):
