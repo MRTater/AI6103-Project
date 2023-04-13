@@ -34,6 +34,8 @@ class Block(nn.Module):
         # Second Conv
         # h = self.bnorm2(self.relu(self.conv2(h)))
         h = self.bnorm2(self.activation(self.conv2(h)))
+        # Add residual connection
+        h = h + x
         # Down or Upsample
         return self.transform(h)
 
