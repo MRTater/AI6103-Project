@@ -36,8 +36,10 @@ class Block(nn.Module):
         h = h + time_emb
         # Apply self-attention
         h = h.permute(0, 2, 3, 1)  # Change shape to (batch_size, sequence_length, channels)
+        h = h.flatten(1, 2)  # Flatten the spatial dimensions
         h, _ = self.self_attention(h, h, h)
-        h = h.permute(0, 3, 1, 2)  # Change shape back to (batch_size, channels, height, width)
+        h = h.view(x.shape[0], self.conv2.out_channels, x.shape[2], x.shape[3])  # Reshape back to (batch_size, channels, height, width)
+
         # Second Conv
         # h = self.bnorm2(self.relu(self.conv2(h)))
         h = self.bnorm2(self.activation(self.conv2(h)))
