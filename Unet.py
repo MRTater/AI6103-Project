@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import math
+from torch.nn import MultiheadAttention
 
 
 class Block(nn.Module):
@@ -19,6 +20,8 @@ class Block(nn.Module):
         self.bnorm1 = nn.BatchNorm2d(out_ch)
         self.bnorm2 = nn.BatchNorm2d(out_ch)
         # self.relu  = nn.ReLU()
+        # Add self-attention layer
+        self.self_attention = MultiheadAttention(embed_dim=out_ch, num_heads=1)
         
     def forward(self, x, t, ):
         # First Conv
@@ -31,6 +34,10 @@ class Block(nn.Module):
         time_emb = time_emb[(..., ) + (None, ) * 2]
         # Add time channel
         h = h + time_emb
+        # Apply self-attention
+        h = h.permute(0, 2, 3, 1)  # Change shape to (batch_size, sequence_length, channels)
+        h, _ = self.self_attention(h, h, h)
+        h = h.permute(0, 3, 1, 2)  # Change shape back to (batch_size, channels, height, width)
         # Second Conv
         # h = self.bnorm2(self.relu(self.conv2(h)))
         h = self.bnorm2(self.activation(self.conv2(h)))
