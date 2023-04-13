@@ -4,9 +4,11 @@ import math
 
 
 class Block(nn.Module):
-    def __init__(self, in_ch, out_ch, time_emb_dim, up=False):
+    def __init__(self, in_ch, out_ch, time_emb_dim, activation, up=False):
         super().__init__()
         self.time_mlp =  nn.Linear(time_emb_dim, out_ch)
+        self.activation = activation
+        
         if up:
             self.conv1 = nn.Conv2d(2*in_ch, out_ch, 3, padding=1)
             self.transform = nn.ConvTranspose2d(out_ch, out_ch, 4, 2, 1)
@@ -16,19 +18,22 @@ class Block(nn.Module):
         self.conv2 = nn.Conv2d(out_ch, out_ch, 3, padding=1)
         self.bnorm1 = nn.BatchNorm2d(out_ch)
         self.bnorm2 = nn.BatchNorm2d(out_ch)
-        self.relu  = nn.ReLU()
+        # self.relu  = nn.ReLU()
         
     def forward(self, x, t, ):
         # First Conv
-        h = self.bnorm1(self.relu(self.conv1(x)))
+        # h = self.bnorm1(self.relu(self.conv1(x)))
+        h = self.bnorm1(self.activation(self.conv1(x)))
         # Time embedding
-        time_emb = self.relu(self.time_mlp(t))
+        # time_emb = self.relu(self.time_mlp(t))
+        time_emb = self.activation(self.time_mlp(t))
         # Extend last 2 dimensions
         time_emb = time_emb[(..., ) + (None, ) * 2]
         # Add time channel
         h = h + time_emb
         # Second Conv
-        h = self.bnorm2(self.relu(self.conv2(h)))
+        # h = self.bnorm2(self.relu(self.conv2(h)))
+        h = self.bnorm2(self.activation(self.conv2(h)))
         # Down or Upsample
         return self.transform(h)
 
@@ -53,7 +58,7 @@ class SimpleUnet(nn.Module):
     """
     A simplified variant of the Unet architecture.
     """
-    def __init__(self):
+    def __init__(self, activation):
         super().__init__()
         image_channels = 3
         down_channels = (64, 128, 256, 512, 1024)
@@ -65,7 +70,8 @@ class SimpleUnet(nn.Module):
         self.time_mlp = nn.Sequential(
                 SinusoidalPositionEmbeddings(time_emb_dim),
                 nn.Linear(time_emb_dim, time_emb_dim),
-                nn.ReLU()
+                # nn.ReLU()
+                activation
             )
         
         # Initial projection
@@ -73,11 +79,11 @@ class SimpleUnet(nn.Module):
 
         # Downsample
         self.downs = nn.ModuleList([Block(down_channels[i], down_channels[i+1], \
-                                    time_emb_dim) \
+                                    time_emb_dim, activation) \
                     for i in range(len(down_channels)-1)])
         # Upsample
         self.ups = nn.ModuleList([Block(up_channels[i], up_channels[i+1], \
-                                        time_emb_dim, up=True) \
+                                        time_emb_dim, activation, up=True) \
                     for i in range(len(up_channels)-1)])
 
         self.output = nn.Conv2d(up_channels[-1], 3, out_dim)

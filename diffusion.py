@@ -14,9 +14,9 @@ class Diffusion():
         self.args = args
         # self.betas = self.linear_beta_schedule(timesteps=self.args.T)
         if self.args.beta_schedule == 'linear':
-            print("cosine beta schedule invoked")
             self.betas = self.linear_beta_schedule(timesteps=self.args.T)
         elif self.args.beta_schedule == 'cosine':
+            print("cosine beta schedule invoked")
             self.betas = self.cosine_beta_schedule(timesteps=self.args.T)
         else:
             raise ValueError("Invalid beta_schedule. Choose 'linear' or 'cosine'.")
