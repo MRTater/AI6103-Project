@@ -37,7 +37,7 @@ def main(args):
             loss.backward()
             optimizer.step()
 
-            if epoch % 100 == 0 and step == 0:
+            if epoch % 1 == 0 and step == 0: # for debugging
                 print(f"Epoch {epoch} | step {step:03d} Loss: {loss.item()} ")
                 diffusion.sample_plot_image(model, epoch)
                 torch.save(model.state_dict(), os.path.join(models_path, str(epoch) + ".pth"))
@@ -54,6 +54,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset_folder', type=str, required=True)
     parser.add_argument('--model_path', type=str, default=None)
     parser.add_argument('--num_workers', type=int, default=2)
+    parser.add_argument('--beta_schedule', type=str, default='linear', choices=['linear', 'cosine'], help='Beta schedule to use: "linear" or "cosine"')
     args = parser.parse_args()
     print(args)
     main(args)

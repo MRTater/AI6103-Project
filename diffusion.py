@@ -12,7 +12,14 @@ class Diffusion():
     def __init__(self, args) -> None:
         # Define beta schedule
         self.args = args
-        self.betas = self.linear_beta_schedule(timesteps=self.args.T)
+        # self.betas = self.linear_beta_schedule(timesteps=self.args.T)
+        if self.args.beta_schedule == 'linear':
+            print("cosine beta schedule invoked")
+            self.betas = self.linear_beta_schedule(timesteps=self.args.T)
+        elif self.args.beta_schedule == 'cosine':
+            self.betas = self.cosine_beta_schedule(timesteps=self.args.T)
+        else:
+            raise ValueError("Invalid beta_schedule. Choose 'linear' or 'cosine'.")
 
         # Pre-calculate different terms for closed form
         self.alphas = 1. - self.betas
@@ -25,6 +32,14 @@ class Diffusion():
 
     def linear_beta_schedule(self, timesteps, start=0.0001, end=0.02):
         return torch.linspace(start, end, timesteps)
+
+    def cosine_beta_schedule(self, timesteps, start=0.0001, end=0.02):
+        # Calculate t in the range of [0, pi/2] for each timestep
+        t = torch.linspace(0, math.pi / 2, timesteps)
+
+        # Calculate the cosine beta schedule using the cosine function
+        betas = (end - start) * (1 - torch.cos(t)) + start
+        return betas
 
     def get_index_from_list(self, vals, t, x_shape):
         """ 
