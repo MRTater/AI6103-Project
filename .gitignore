@@ -12,3 +12,6 @@ diffusion_pokemon_test.out
 diffusion_pokemon.out
 error.err
 test_error.err
+
+*.out
+*.err
