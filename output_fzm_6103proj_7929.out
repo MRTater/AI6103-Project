@@ -88,3 +88,4 @@ SimpleUnet(
 Num params:  62438883
 Epoch 0 | step 000 Loss: 0.8110166788101196 
 Epoch 100 | step 000 Loss: 0.055880364030599594 
+Epoch 200 | step 000 Loss: 0.06607082486152649 
