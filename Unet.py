@@ -24,13 +24,11 @@ class Block(nn.Module):
         # Add self-attention layer
         self.self_attention = MultiheadAttention(embed_dim=out_ch, num_heads=1)
         # Skip connection
-        self.skip = nn.Sequential(nn.Conv2d(in_ch, out_ch, 1), nn.BatchNorm2d(out_ch))
+        # Modify the skip connection to handle the doubled number of input channels when up is True
+        skip_in_channels = 2 * in_ch if up else in_ch
+        self.skip = nn.Sequential(nn.Conv2d(skip_in_channels, out_ch, 1), nn.BatchNorm2d(out_ch))
 
-    def forward(
-        self,
-        x,
-        t,
-    ):
+    def forward(self, x, t,):
         # First Conv
         # h = self.bnorm1(self.relu(self.conv1(x)))
         h = self.bnorm1(self.activation(self.conv1(x)))
