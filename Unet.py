@@ -22,6 +22,11 @@ class Block(nn.Module):
         # self.relu  = nn.ReLU()
         # Add self-attention layer
         self.self_attention = MultiheadAttention(embed_dim=out_ch, num_heads=1)
+        # Skip connection
+        self.skip = nn.Sequential(
+            nn.Conv2d(in_ch, out_ch, 1),
+            nn.BatchNorm2d(out_ch)
+        )
         
     def forward(self, x, t, ):
         # First Conv
@@ -44,7 +49,8 @@ class Block(nn.Module):
         # h = self.bnorm2(self.relu(self.conv2(h)))
         h = self.bnorm2(self.activation(self.conv2(h)))
         # Add residual connection
-        h = h + x
+        skip_x = self.skip(x)
+        h = h + skip_x
         # Down or Upsample
         return self.transform(h)
 
