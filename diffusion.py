@@ -69,10 +69,16 @@ class Diffusion():
         result = torch.clamp(result, -1.0, 1.0)  # Clamp the values
         return result, noise.to(device)
 
+    # def get_loss(self, model, x_0, t):
+    #     x_noisy, noise = self.forward_diffusion_sample(x_0, t)
+    #     noise_pred = model(x_noisy, t)
+    #     return F.l1_loss(noise, noise_pred)
+    
+    # L2 loss can lead to smoother denoising results, as it tends to penalize large deviations more heavily.
     def get_loss(self, model, x_0, t):
         x_noisy, noise = self.forward_diffusion_sample(x_0, t)
         noise_pred = model(x_noisy, t)
-        return F.l1_loss(noise, noise_pred)
+        return F.mse_loss(noise, noise_pred)
 
     @torch.no_grad()
     def sample_timestep(self, model, x, t):
