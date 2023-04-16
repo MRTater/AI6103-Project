@@ -74,7 +74,7 @@ def lamfunc(x):
 def load_FaceDataset(dataset_folder, img_size, bs, num_workers):
     data_transforms = transforms.Compose(
         [
-            transforms.Resize((img_size, img_size)),
+            # transforms.Resize((img_size, img_size)),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize(
