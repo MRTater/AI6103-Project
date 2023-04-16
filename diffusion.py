@@ -65,7 +65,9 @@ class Diffusion():
         # print(x_0.shape) # 3, 64, 64
         mean = sqrt_alphas_cumprod_t.to(device) * x_0.to(device)
         variance = sqrt_one_minus_alphas_cumprod_t.to(device) * noise.to(device)
-        return mean + variance, noise.to(device)
+        result = mean + variance
+        result = torch.clamp(result, -1.0, 1.0)  # Clamp the values
+        return result, noise.to(device)
 
     def get_loss(self, model, x_0, t):
         x_noisy, noise = self.forward_diffusion_sample(x_0, t)
