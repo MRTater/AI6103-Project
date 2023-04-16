@@ -44,7 +44,7 @@ def main(args):
             loss.backward()
             optimizer.step()
 
-            if epoch % 1 == 0 and step == 0: # for debugging
+            if epoch % 50 == 0 and step == 0: # for debugging
                 print(f"Epoch {epoch} | step {step:03d} Loss: {loss.item()} ")
                 diffusion.sample_plot_image(model, epoch)
                 torch.save(model.state_dict(), os.path.join(models_path, str(epoch) + ".pth"))
