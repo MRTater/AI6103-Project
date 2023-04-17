@@ -4,13 +4,13 @@ import torch.nn.functional as F
 import tqdm
 from torch.optim import Adam
 from Unet import SimpleUnet
-from dataloader import load_transformed_dataset
+from dataloader import load_transformed_dataset, load_FaceDataset
 from diffusion import Diffusion
 
 
 def main(args):
     diffusion = Diffusion(args)
-    dataloader = load_transformed_dataset(args.dataset_folder, args.img_size, args.batch_size, args.num_workers)
+    dataloader = load_FaceDataset(args.dataset_folder, args.img_size, args.batch_size, args.num_workers)
     print("Dataset loaded")
     device = args.device
 
@@ -41,6 +41,7 @@ def main(args):
                 print(f"Epoch {epoch} | step {step:03d} Loss: {loss.item()} ")
                 diffusion.sample_plot_image(model, epoch)
                 torch.save(model.state_dict(), os.path.join(models_path, str(epoch) + ".pth"))
+
 
 if __name__ == '__main__':
     import argparse
