@@ -19,4 +19,5 @@ python train.py \
 --dataset "/home/msai/zfu009/dataset/pokemon_jpg/pokemon_jpg" \
 --epochs 2000 \
 --beta_schedule cosine \
---activation silu
+--activation silu \
+--use_self_attention
