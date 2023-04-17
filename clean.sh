@@ -7,6 +7,6 @@ rm -f *.err *.out
 rm -f result/*
 
 # Remove files in the model directory
-rm -f model/*
+rm -f models/*
 
 echo "Cleaned up files!"

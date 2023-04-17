@@ -37,7 +37,7 @@ class Block(nn.Module):
 
         # Add self-attention layer
         if self.use_self_attention:
-            print("Self-attention Invoked")
+            # print("Self-attention Invoked")
             self.self_attention_layer = SelfAttentionLayer(out_ch)
 
         # Skip connection
