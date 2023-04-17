@@ -2,6 +2,7 @@ import os
 import torch
 import torch.nn.functional as F
 import tqdm
+from torch import nn
 from torch.optim import Adam
 from Unet import SimpleUnet
 from dataloader import load_transformed_dataset
@@ -13,8 +14,14 @@ def main(args):
     dataloader = load_transformed_dataset(args.dataset_folder, args.img_size, args.batch_size, args.num_workers)
     print("Dataset loaded")
     device = args.device
+    
+    # Activation fuction
+    if args.activation == "relu":
+        activation_function = nn.ReLU()
+    elif args.activation == "silu":
+        activation_function = nn.SiLU()
 
-    model = SimpleUnet()
+    model = SimpleUnet(activation_function)
     print(model)
     print("Num params: ", sum(p.numel() for p in model.parameters()))
     if args.model_path is not None:
@@ -37,7 +44,7 @@ def main(args):
             loss.backward()
             optimizer.step()
 
-            if epoch % 100 == 0 and step == 0:
+            if epoch % 50 == 0 and step == 0: # for debugging
                 print(f"Epoch {epoch} | step {step:03d} Loss: {loss.item()} ")
                 diffusion.sample_plot_image(model, epoch)
                 torch.save(model.state_dict(), os.path.join(models_path, str(epoch) + ".pth"))
@@ -54,6 +61,8 @@ if __name__ == '__main__':
     parser.add_argument('--dataset_folder', type=str, required=True)
     parser.add_argument('--model_path', type=str, default=None)
     parser.add_argument('--num_workers', type=int, default=2)
+    parser.add_argument('--beta_schedule', type=str, default='linear', choices=['linear', 'cosine'], help='Beta schedule to use: "linear" or "cosine"')
+    parser.add_argument("--activation", type=str, default="relu", choices=["relu", "silu"], help="Activation function to use in the U-Net model (default: relu)")
     args = parser.parse_args()
     print(args)
     main(args)
