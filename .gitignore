@@ -4,6 +4,7 @@ pokemon_jpg/
 result/
 __pycache__/
 dataset/
+test_realtime/
 
 
 archive.zip
@@ -12,3 +13,4 @@ diffusion_pokemon_test.out
 diffusion_pokemon.out
 error.err
 test_error.err
+TestEnv.yml

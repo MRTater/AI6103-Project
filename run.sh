@@ -2,7 +2,7 @@
 #SBATCH --partition=SCSEGPU_M1
 #SBATCH --qos=q_amsai
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:2
 #SBATCH --mem=12G
 #SBATCH --job-name=diffusion_pokemon
 #SBATCH --output=diffusion_pokemon.out
