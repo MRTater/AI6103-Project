@@ -125,6 +125,7 @@ class Diffusion():
             Path(img_folder).mkdir(parents=True, exist_ok=True)
             # os.makedirs(img_folder)
         plt.savefig(os.path.join(img_folder, str(epoch)+".png"))
+        plt.close()
 
 def show_tensor_image(image):
     reverse_transforms = transforms.Compose([
