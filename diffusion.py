@@ -12,7 +12,14 @@ class Diffusion():
     def __init__(self, args) -> None:
         # Define beta schedule
         self.args = args
-        self.betas = self.linear_beta_schedule(timesteps=self.args.T)
+        # self.betas = self.linear_beta_schedule(timesteps=self.args.T)
+        if self.args.beta_schedule == 'linear':
+            self.betas = self.linear_beta_schedule(timesteps=self.args.T)
+        elif self.args.beta_schedule == 'cosine':
+            print("cosine beta schedule invoked")
+            self.betas = self.cosine_beta_schedule(timesteps=self.args.T)
+        else:
+            raise ValueError("Invalid beta_schedule. Choose 'linear' or 'cosine'.")
 
         # Pre-calculate different terms for closed form
         self.alphas = 1. - self.betas
@@ -25,6 +32,14 @@ class Diffusion():
 
     def linear_beta_schedule(self, timesteps, start=0.0001, end=0.02):
         return torch.linspace(start, end, timesteps)
+
+    def cosine_beta_schedule(self, timesteps, start=0.0001, end=0.02):
+        # Calculate t in the range of [0, pi/2] for each timestep
+        t = torch.linspace(0, math.pi / 2, timesteps)
+
+        # Calculate the cosine beta schedule using the cosine function
+        betas = (end - start) * (1 - torch.cos(t)) + start
+        return betas
 
     def get_index_from_list(self, vals, t, x_shape):
         """ 
@@ -50,12 +65,20 @@ class Diffusion():
         # print(x_0.shape) # 3, 64, 64
         mean = sqrt_alphas_cumprod_t.to(device) * x_0.to(device)
         variance = sqrt_one_minus_alphas_cumprod_t.to(device) * noise.to(device)
-        return mean + variance, noise.to(device)
+        result = mean + variance
+        result = torch.clamp(result, -1.0, 1.0)  # Clamp the values
+        return result, noise.to(device)
 
+    # def get_loss(self, model, x_0, t):
+    #     x_noisy, noise = self.forward_diffusion_sample(x_0, t)
+    #     noise_pred = model(x_noisy, t)
+    #     return F.l1_loss(noise, noise_pred)
+    
+    # L2 loss can lead to smoother denoising results, as it tends to penalize large deviations more heavily.
     def get_loss(self, model, x_0, t):
         x_noisy, noise = self.forward_diffusion_sample(x_0, t)
         noise_pred = model(x_noisy, t)
-        return F.l1_loss(noise, noise_pred)
+        return F.mse_loss(noise, noise_pred)
 
     @torch.no_grad()
     def sample_timestep(self, model, x, t):

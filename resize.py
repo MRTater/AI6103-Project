@@ -8,6 +8,7 @@ files = os.listdir(DATAFOLDER_PATH)
 
 def resize(sample_size, img_size):
     for file in sorted(files[:sample_size]):
+
         original_file = os.path.join(DATAFOLDER_PATH, file)
         resized_file = os.path.join('data', 'resized', file)
 
