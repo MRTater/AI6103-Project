@@ -54,18 +54,18 @@ class FaceDataset(torch.utils.data.Dataset):
             for name in names:
                 if name.endswith("png") or name.endswith("jpg"):
                     self.img_names.append(os.path.join(root, name))
-        print(self.img_names)
+        # print(self.img_names)
 
     def __getitem__(self, index):
         img_name = self.img_names[index]
         img = Image.open(img_name).convert('RGB')
         img = self.transform(img)
-        print("-------")
-        print(type(img))
+        # print("-------")
+        # print(type(img))
         return img
 
     def __len__(self):
-        print(len(self.img_names))
+        # print(len(self.img_names))
         return len(self.img_names)
 
 def lamfunc(x):
