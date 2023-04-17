@@ -16,7 +16,7 @@ python train.py \
 --img_size 256 \
 --batch_size 16 \
 --T 1000 \
---dataset "/home/msai/zfu009/dataset/pokemon_jpg/pokemon_jpg" \
+--dataset "data/resized" \
 --epochs 2000 \
 --beta_schedule cosine \
 --activation silu
