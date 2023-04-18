@@ -8,7 +8,7 @@ from torch.nn import MultiheadAttention
 class SelfAttentionLayer(nn.Module):
     def __init__(self, out_ch):
         super().__init__()
-        self.self_attention = MultiheadAttention(embed_dim=out_ch, num_heads=4)
+        self.self_attention = MultiheadAttention(embed_dim=out_ch, num_heads=2)
 
     def forward(self, h):
         # Apply self-attention
@@ -38,7 +38,7 @@ class Block(nn.Module):
 
         # Add self-attention layer
         if self.use_self_attention:
-            print("Self-attention Invoked")
+            # print("Self-attention Invoked")
             self.self_attention_layer = SelfAttentionLayer(out_ch)
         
         # Skip connection

@@ -16,11 +16,11 @@ python train.py \
 --img_size 64 \
 --batch_size 128 \
 --epochs 500 \
---T 500 \
+--T 300 \
 --dataset_folder "/home/msai/zfu009/dataset/stanford_cars" \
 --activation silu \
-# --beta_schedule cosine \
 --lr_scheduler cosine \
---use_self_attention \
 --use_skip_connection \
+# --use_self_attention \
+# --beta_schedule cosine \
 # --resume_from "/home/msai/zfu009/workspace/AI6103-Project/models/1.pth"
