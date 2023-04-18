@@ -22,4 +22,4 @@ python train.py \
 --activation silu \
 --use_self_attention \
 --lr_scheduler cosine \
---resume_from "/home/msai/zfu009/workspace/AI6103-Project/models/1.pth"
+# --resume_from "/home/msai/zfu009/workspace/AI6103-Project/models/1.pth"

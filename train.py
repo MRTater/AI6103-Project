@@ -24,28 +24,34 @@ def main(args):
         activation_function = nn.ReLU()
     elif args.activation == "silu":
         activation_function = nn.SiLU()
-
     model = SimpleUnet(activation_function, args.use_self_attention)
-    # print(model)
-    print("Num params: ", sum(p.numel() for p in model.parameters()))
-    
-    if args.resume_from is not None:
-        checkpoint = torch.load(args.resume_from)
-        model.load_state_dict(checkpoint['model_state_dict'])
-    model.to(device)
-    epochs = args.epochs
     optimizer = Adam(model.parameters(), lr=0.001)
     # Setup Cosine scheduler for LR
     if args.lr_scheduler == 'cosine':
-        scheduler = CosineAnnealingLR(optimizer, T_max=epochs, eta_min=0.00001)
+        scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=0.00001)
     else:
         scheduler = None
 
+    # If resume the training
+    if args.resume_from:
+        checkpoint = torch.load(args.resume_from)
+        args.start_epoch = checkpoint['epoch'] + 1
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        if scheduler:
+            scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+    else:
+        args.start_epoch = 0
+
+    model.to(device)
+    print("Num params: ", sum(p.numel() for p in model.parameters()))
+    # print(model)
+    
     if not os.path.exists("models"):
         os.mkdir("models")
     models_path = "models"
 
-    for epoch in range(args.start_epoch, epochs):
+    for epoch in range(args.start_epoch, args.epochs):
         epoch_start_time = time.time()
 
         for step, batch in enumerate(dataloader):
@@ -58,10 +64,10 @@ def main(args):
         
         epoch_end_time = time.time()
         epoch_duration = epoch_end_time - epoch_start_time
-        remaining_time = (epochs - epoch - 1) * epoch_duration
+        remaining_time = (args.epochs - epoch - 1) * epoch_duration
         current_lr = optimizer.param_groups[0]['lr']
 
-        if epoch % 1 == 0:  # for debugging
+        if epoch % 1 == 0:  # for logging
             print(
                 f"Epoch {epoch} | Loss: {loss.item():.4f} | "
                 f"Time per epoch: {epoch_duration:.2f}seconds | "
@@ -69,9 +75,12 @@ def main(args):
                 f"Current LR: {current_lr:.5f}"
             )
             diffusion.sample_plot_image(model, epoch)
+        if epoch % 20 == 0:  # for saving models
             torch.save({
                 'epoch': epoch,
-                'model_state_dict': model.state_dict()
+                'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'scheduler_state_dict': scheduler.state_dict() if scheduler else None,
             }, os.path.join(models_path, str(epoch) + ".pth"))
         
         if scheduler:
@@ -94,12 +103,6 @@ if __name__ == '__main__':
     parser.add_argument('--resume_from', type=str, default=None, help="Resume training from a saved model")
     args = parser.parse_args()
     
-    if args.resume_from:
-        checkpoint = torch.load(args.resume_from)
-        args.start_epoch = checkpoint['epoch'] + 1
-    else:
-        args.start_epoch = 0
-
     print("Experiment Hyperparameters:")
     print('-' * 20)
     for key, value in vars(args).items():
