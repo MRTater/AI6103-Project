@@ -8,7 +8,7 @@ from torch.nn import MultiheadAttention
 class SelfAttentionLayer(nn.Module):
     def __init__(self, out_ch):
         super().__init__()
-        self.self_attention = MultiheadAttention(embed_dim=out_ch, num_heads=1)
+        self.self_attention = MultiheadAttention(embed_dim=out_ch, num_heads=4)
 
     def forward(self, h):
         # Apply self-attention
@@ -19,11 +19,12 @@ class SelfAttentionLayer(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, in_ch, out_ch, time_emb_dim, activation, use_self_attention, up=False):
+    def __init__(self, in_ch, out_ch, time_emb_dim, activation, use_self_attention, use_skip_connection, up=False):
         super().__init__()
         self.time_mlp = nn.Linear(time_emb_dim, out_ch)
-        self.activation = activation
         self.use_self_attention = use_self_attention
+        self.use_skip_connection = use_skip_connection
+        self.activation = activation
 
         if up:
             self.conv1 = nn.Conv2d(2 * in_ch, out_ch, 3, padding=1)
@@ -37,13 +38,14 @@ class Block(nn.Module):
 
         # Add self-attention layer
         if self.use_self_attention:
-            # print("Self-attention Invoked")
+            print("Self-attention Invoked")
             self.self_attention_layer = SelfAttentionLayer(out_ch)
-
+        
         # Skip connection
-        # Modify the skip connection to handle the doubled number of input channels when up is True
-        # skip_in_channels = 2 * in_ch if up else in_ch
-        # self.skip = nn.Sequential(nn.Conv2d(skip_in_channels, out_ch, 1), nn.BatchNorm2d(out_ch))
+        if self.use_skip_connection:
+            # Modify the skip connection to handle the doubled number of input channels when up is True
+            skip_in_channels = 2 * in_ch if up else in_ch
+            self.skip = nn.Sequential(nn.Conv2d(skip_in_channels, out_ch, 1), nn.BatchNorm2d(out_ch))
 
     def forward(self, x, t,):
         # First Conv
@@ -61,8 +63,9 @@ class Block(nn.Module):
         # Second Conv
         h = self.bnorm2(self.activation(self.conv2(h)))
         # Add residual connection
-        # skip_x = self.skip(x)
-        # h = h + skip_x
+        if self.use_skip_connection:
+            skip_x = self.skip(x)
+            h = h + skip_x
         # Down or Upsample
         return self.transform(h)
 
@@ -88,15 +91,20 @@ class SimpleUnet(nn.Module):
     A simplified variant of the Unet architecture.
     """
 
-    def __init__(self, activation, use_self_attention):
+    def __init__(self, activation_input, use_self_attention, use_skip_connection):
         super().__init__()
         image_channels = 3
         down_channels = (64, 128, 256, 512, 1024)
         up_channels = (1024, 512, 256, 128, 64)
-        # down_channels = (64, 128, 256, 512, 1024, 2048)  # deeper U-net
-        # up_channels = (2048, 1024, 512, 256, 128, 64)
         out_dim = 1
         time_emb_dim = 32
+        
+        # Activation fuction
+        self.activation_input = activation_input
+        if self.activation_input == "relu":
+            activation = nn.ReLU()
+        elif self.activation_input == "silu":
+            activation = nn.SiLU()
 
         # Time embedding
         self.time_mlp = nn.Sequential(
@@ -111,7 +119,7 @@ class SimpleUnet(nn.Module):
         # Downsample
         self.downs = nn.ModuleList(
             [
-                Block(down_channels[i], down_channels[i + 1], time_emb_dim, activation, use_self_attention)
+                Block(down_channels[i], down_channels[i + 1], time_emb_dim, activation, use_self_attention, use_skip_connection)
                 for i in range(len(down_channels) - 1)
             ]
         )
@@ -124,6 +132,7 @@ class SimpleUnet(nn.Module):
                     time_emb_dim,
                     activation,
                     use_self_attention,
+                    use_skip_connection,
                     up=True,
                 )
                 for i in range(len(up_channels) - 1)
