@@ -99,6 +99,7 @@ if __name__ == '__main__':
     parser.add_argument('--beta_schedule', type=str, default='linear', choices=['linear', 'cosine'], help='Beta schedule to use: "linear" or "cosine"')
     parser.add_argument("--activation", type=str, default="relu", choices=["relu", "silu"], help="Activation function to use in the U-Net model (default: relu)")
     parser.add_argument('--use_self_attention', action='store_true', help="Enable self-attention in the U-Net model")
+
     parser.add_argument('--lr_scheduler', type=str, default=None, choices=['cosine'], help='Learning rate scheduler to use: "cosine"')
     parser.add_argument('--resume_from', type=str, default=None, help="Resume training from a saved model")
     args = parser.parse_args()
