@@ -1,10 +1,11 @@
-import math
 import os
-import torch
-import torch.nn.functional as F
-import matplotlib.pyplot as plt
-from torchvision import transforms 
+import math
 import numpy as np
+import torch
+
+import torch.nn.functional as F
+from torchvision import transforms 
+import matplotlib.pyplot as plt
 from pathlib import Path
 
 
@@ -12,13 +13,7 @@ class Diffusion():
     def __init__(self, args) -> None:
         # Define beta schedule
         self.args = args
-        if self.args.beta_schedule == 'linear':
-            self.betas = self.linear_beta_schedule(timesteps=self.args.T)
-        elif self.args.beta_schedule == 'cosine':
-            # print("cosine beta schedule invoked")
-            self.betas = self.cosine_beta_schedule(timesteps=self.args.T)
-        else:
-            raise ValueError("Invalid beta_schedule. Choose 'linear' or 'cosine'.")
+        self.betas = self.linear_beta_schedule(timesteps=self.args.T)
 
         # Pre-calculate different terms for closed form
         self.alphas = 1. - self.betas
@@ -31,14 +26,6 @@ class Diffusion():
 
     def linear_beta_schedule(self, timesteps, start=0.0001, end=0.02):
         return torch.linspace(start, end, timesteps)
-
-    def cosine_beta_schedule(self, timesteps, start=0.0001, end=0.02):
-        # Calculate t in the range of [0, pi/2] for each timestep
-        t = torch.linspace(0, math.pi / 2, timesteps)
-
-        # Calculate the cosine beta schedule using the cosine function
-        betas = (end - start) * (1 - torch.cos(t)) + start
-        return betas
 
     def get_index_from_list(self, vals, t, x_shape):
         """ 
@@ -60,24 +47,15 @@ class Diffusion():
             self.sqrt_one_minus_alphas_cumprod, t, x_0.shape
         )
         # mean + variance
-        # print(sqrt_alphas_cumprod_t.shape) # 128, 1, 1
-        # print(x_0.shape) # 3, 64, 64
         mean = sqrt_alphas_cumprod_t.to(device) * x_0.to(device)
         variance = sqrt_one_minus_alphas_cumprod_t.to(device) * noise.to(device)
         result = mean + variance
-        result = torch.clamp(result, -1.0, 1.0)  # Clamp the values
         return result, noise.to(device)
 
     def get_loss(self, model, x_0, t):
         x_noisy, noise = self.forward_diffusion_sample(x_0, t)
         noise_pred = model(x_noisy, t)
         return F.l1_loss(noise, noise_pred)
-    
-    # L2 loss can lead to smoother denoising results, as it tends to penalize large deviations more heavily.
-    # def get_loss(self, model, x_0, t):
-    #     x_noisy, noise = self.forward_diffusion_sample(x_0, t)
-    #     noise_pred = model(x_noisy, t)
-    #     return F.mse_loss(noise, noise_pred)
 
     @torch.no_grad()
     def sample_timestep(self, model, x, t):
@@ -123,7 +101,6 @@ class Diffusion():
         img_folder = os.path.join("result", train) + "/"
         if not os.path.exists(img_folder):
             Path(img_folder).mkdir(parents=True, exist_ok=True)
-            # os.makedirs(img_folder)
         plt.savefig(os.path.join(img_folder, str(epoch)+".png"))
         plt.close()
 
@@ -140,4 +117,3 @@ def show_tensor_image(image):
     if len(image.shape) == 4:
         image = image[0, :, :, :] 
     plt.imshow(reverse_transforms(image))
-
