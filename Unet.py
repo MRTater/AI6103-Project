@@ -42,8 +42,8 @@ class Block(nn.Module):
 
         # Skip connection
         # Modify the skip connection to handle the doubled number of input channels when up is True
-        skip_in_channels = 2 * in_ch if up else in_ch
-        self.skip = nn.Sequential(nn.Conv2d(skip_in_channels, out_ch, 1), nn.BatchNorm2d(out_ch))
+        # skip_in_channels = 2 * in_ch if up else in_ch
+        # self.skip = nn.Sequential(nn.Conv2d(skip_in_channels, out_ch, 1), nn.BatchNorm2d(out_ch))
 
     def forward(self, x, t,):
         # First Conv
@@ -61,8 +61,8 @@ class Block(nn.Module):
         # Second Conv
         h = self.bnorm2(self.activation(self.conv2(h)))
         # Add residual connection
-        skip_x = self.skip(x)
-        h = h + skip_x
+        # skip_x = self.skip(x)
+        # h = h + skip_x
         # Down or Upsample
         return self.transform(h)
 

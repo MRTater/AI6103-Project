@@ -13,13 +13,13 @@ module load anaconda/anaconda3
 eval "$(conda shell.bash hook)" 
 conda activate 6103proj
 python train.py \
---img_size 256 \
---batch_size 16 \
---T 1000 \
---dataset "/home/msai/zfu009/dataset/pokemon_jpg/pokemon_jpg" \
---epochs 1000 \
---beta_schedule cosine \
---activation silu \
---use_self_attention \
---lr_scheduler cosine \
+--img_size 64 \
+--batch_size 64 \
+--T 500 \
+--dataset_folder "/home/msai/zfu009/dataset/stanford_cars/cars_train" \
+--epochs 300 \
+# --beta_schedule cosine \
+# --activation silu \
+# --use_self_attention \
+# --lr_scheduler cosine \
 # --resume_from "/home/msai/zfu009/workspace/AI6103-Project/models/1.pth"
