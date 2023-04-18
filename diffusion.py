@@ -19,6 +19,9 @@ class Diffusion():
             self.betas = self.cosine_beta_schedule(timesteps=self.args.T)
         else:
             raise ValueError("Invalid beta_schedule. Choose 'linear' or 'cosine'.")
+        
+        # print("betas:")
+        # print(self.betas)
 
         # Pre-calculate different terms for closed form
         self.alphas = 1. - self.betas

@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --partition=SCSEGPU_M2
-#SBATCH --qos=q_dmsai
+#SBATCH --partition=SCSEGPU_M1
+#SBATCH --qos=q_amsai
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:1
-#SBATCH --mem=30G
+#SBATCH --mem=12G
 #SBATCH --job-name=fzm_6103proj
 #SBATCH --output=output_%x_%j.out
 #SBATCH --error=error_%x_%j.err
@@ -14,12 +14,13 @@ eval "$(conda shell.bash hook)"
 conda activate 6103proj
 python train.py \
 --img_size 64 \
---batch_size 64 \
+--batch_size 128 \
+--epochs 500 \
 --T 500 \
---dataset_folder "/home/msai/zfu009/dataset/stanford_cars/cars_train" \
---epochs 300 \
+--dataset_folder "/home/msai/zfu009/dataset/stanford_cars" \
+--activation silu \
 # --beta_schedule cosine \
-# --activation silu \
-# --use_self_attention \
-# --lr_scheduler cosine \
+--lr_scheduler cosine \
+--use_self_attention \
+--use_skip_connection \
 # --resume_from "/home/msai/zfu009/workspace/AI6103-Project/models/1.pth"
