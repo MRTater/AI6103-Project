@@ -8,7 +8,7 @@ from torch.nn import MultiheadAttention
 class SelfAttentionLayer(nn.Module):
     def __init__(self, out_ch):
         super().__init__()
-        self.self_attention = MultiheadAttention(embed_dim=out_ch, num_heads=2)
+        self.self_attention = MultiheadAttention(embed_dim=out_ch, num_heads=4)
 
     def forward(self, h):
         # Apply self-attention
