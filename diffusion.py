@@ -37,11 +37,20 @@ class Diffusion():
 
     def cosine_beta_schedule(self, timesteps, start=0.0001, end=0.02):
         # Calculate t in the range of [0, pi/2] for each timestep
-        t = torch.linspace(0, math.pi / 2, timesteps)
+        # t = torch.linspace(0, math.pi / 2, timesteps)
 
         # Calculate the cosine beta schedule using the cosine function
-        betas = (end - start) * (1 - torch.cos(t)) + start
-        return betas
+        # betas = (end - start) * (1 - torch.cos(t)) + start
+        # return betas
+
+        max_beta = 0.999
+        alpha_bar = lambda t: math.cos((t + 0.008) / 1.008 * math.pi / 2) ** 2
+        betas = []
+        for i in range(timesteps):
+            t1 = i / timesteps
+            t2 = (i + 1) / timesteps
+            betas.append(min(1 - alpha_bar(t2) / alpha_bar(t1), max_beta))
+        return np.array(betas)
 
     def get_index_from_list(self, vals, t, x_shape):
         """ 

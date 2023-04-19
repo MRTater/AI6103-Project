@@ -5,6 +5,7 @@ result/
 __pycache__/
 dataset/
 stanford_cars/
+test_realtime/
 
 
 archive.zip
@@ -16,5 +17,8 @@ test_error.err
 
 *.out
 *.err
+*.sh
 
 moveimage.py
+*.yml
+*.zip
