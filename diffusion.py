@@ -50,7 +50,7 @@ class Diffusion():
             t1 = i / timesteps
             t2 = (i + 1) / timesteps
             betas.append(min(1 - alpha_bar(t2) / alpha_bar(t1), max_beta))
-        return np.array(betas)
+        return torch.Tensor(betas)
 
     def get_index_from_list(self, vals, t, x_shape):
         """ 
