@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --partition=SCSEGPU_M1
-#SBATCH --qos=q_amsai
+#SBATCH --partition=SCSEGPU_M2
+#SBATCH --qos=q_dmsai
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:1
-#SBATCH --mem=12G
+#SBATCH --mem=30G
 #SBATCH --job-name=fzm_6103proj
 #SBATCH --output=output_%x_%j.out
 #SBATCH --error=error_%x_%j.err
@@ -21,6 +21,6 @@ python train.py \
 --activation silu \
 --lr_scheduler cosine \
 --use_skip_connection \
-# --use_self_attention \
+--use_self_attention \
 # --beta_schedule cosine \
 # --resume_from "/home/msai/zfu009/workspace/AI6103-Project/models/1.pth"

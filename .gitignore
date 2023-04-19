@@ -4,7 +4,7 @@ pokemon_jpg/
 result/
 __pycache__/
 dataset/
-stanford_cars/
+car/
 
 
 archive.zip
