@@ -16,5 +16,8 @@ test_error.err
 
 *.out
 *.err
+*.sh
 
 moveimage.py
+*.yml
+*.zip
