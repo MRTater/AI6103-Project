@@ -4,9 +4,15 @@ pokemon_jpg/
 result/
 __pycache__/
 dataset/
+stanford_cars/
 test_realtime/
 
 
 *.zip
 *.out
 *.err
+*.sh
+
+moveimage.py
+*.yml
+*.zip

@@ -19,6 +19,9 @@ class Diffusion():
             self.betas = self.cosine_beta_schedule(timesteps=self.args.T)
         else:
             raise ValueError("Invalid beta_schedule. Choose 'linear' or 'cosine'.")
+        
+        # print("betas:")
+        # print(self.betas)
 
         # Pre-calculate different terms for closed form
         self.alphas = 1. - self.betas
@@ -34,11 +37,20 @@ class Diffusion():
 
     def cosine_beta_schedule(self, timesteps, start=0.0001, end=0.02):
         # Calculate t in the range of [0, pi/2] for each timestep
-        t = torch.linspace(0, math.pi / 2, timesteps)
+        # t = torch.linspace(0, math.pi / 2, timesteps)
 
         # Calculate the cosine beta schedule using the cosine function
-        betas = (end - start) * (1 - torch.cos(t)) + start
-        return betas
+        # betas = (end - start) * (1 - torch.cos(t)) + start
+        # return betas
+
+        max_beta = 0.999
+        alpha_bar = lambda t: math.cos((t + 0.008) / 1.008 * math.pi / 2) ** 2
+        betas = []
+        for i in range(timesteps):
+            t1 = i / timesteps
+            t2 = (i + 1) / timesteps
+            betas.append(min(1 - alpha_bar(t2) / alpha_bar(t1), max_beta))
+        return torch.Tensor(betas)
 
     def get_index_from_list(self, vals, t, x_shape):
         """ 
@@ -68,16 +80,16 @@ class Diffusion():
         result = torch.clamp(result, -1.0, 1.0)  # Clamp the values
         return result, noise.to(device)
 
-    # def get_loss(self, model, x_0, t):
-    #     x_noisy, noise = self.forward_diffusion_sample(x_0, t)
-    #     noise_pred = model(x_noisy, t)
-    #     return F.l1_loss(noise, noise_pred)
-    
-    # L2 loss can lead to smoother denoising results, as it tends to penalize large deviations more heavily.
     def get_loss(self, model, x_0, t):
         x_noisy, noise = self.forward_diffusion_sample(x_0, t)
         noise_pred = model(x_noisy, t)
-        return F.mse_loss(noise, noise_pred)
+        return F.l1_loss(noise, noise_pred)
+    
+    # L2 loss can lead to smoother denoising results, as it tends to penalize large deviations more heavily.
+    # def get_loss(self, model, x_0, t):
+    #     x_noisy, noise = self.forward_diffusion_sample(x_0, t)
+    #     noise_pred = model(x_noisy, t)
+    #     return F.mse_loss(noise, noise_pred)
 
     @torch.no_grad()
     def sample_timestep(self, model, x, t):
@@ -125,6 +137,7 @@ class Diffusion():
             Path(img_folder).mkdir(parents=True, exist_ok=True)
             # os.makedirs(img_folder)
         plt.savefig(os.path.join(img_folder, str(epoch)+".png"))
+        plt.close()
 
 def show_tensor_image(image):
     reverse_transforms = transforms.Compose([
