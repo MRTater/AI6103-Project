@@ -27,7 +27,8 @@ def main(args):
 
     # If resume the training
     if args.resume_from:
-        checkpoint = torch.load(args.resume_from)
+        model.to(args.device)
+        checkpoint = torch.load(args.resume_from, map_location=args.device)
         args.start_epoch = checkpoint['epoch'] + 1
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
