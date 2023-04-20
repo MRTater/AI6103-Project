@@ -1,34 +1,54 @@
 import os
+import time
+import argparse
 import torch
 import torch.nn.functional as F
 import tqdm
+from torch import nn
 from torch.optim import Adam
+from torch.optim.lr_scheduler import CosineAnnealingLR
 from Unet import SimpleUnet
-from dataloader import load_transformed_dataset
+from dataloader import load_transformed_dataset, load_FaceDataset
 from diffusion import Diffusion
 
 
 def main(args):
     diffusion = Diffusion(args)
+    # dataloader = load_FaceDataset(args.dataset_folder, args.img_size, args.batch_size, args.num_workers)
     dataloader = load_transformed_dataset(args.dataset_folder, args.img_size, args.batch_size, args.num_workers)
     print("Dataset loaded")
     device = args.device
+    
+    # Activation fuction
+    if args.activation == "relu":
+        activation_function = nn.ReLU()
+    elif args.activation == "silu":
+        activation_function = nn.SiLU()
 
-    model = SimpleUnet()
-    print(model)
+
+    model = SimpleUnet(activation_function, args.use_self_attention)
+    # print(model)
     print("Num params: ", sum(p.numel() for p in model.parameters()))
-    if args.model_path is not None:
-        model.load_state_dict(torch.load(args.model_path))
+    
+    if args.resume_from is not None:
+        checkpoint = torch.load(args.resume_from)
+        model.load_state_dict(checkpoint['model_state_dict'])
     model.to(device)
-    optimizer = Adam(model.parameters(), lr=0.001)
-    # epochs = 5000 # Try more!
     epochs = args.epochs
+    optimizer = Adam(model.parameters(), lr=0.001)
+    # Setup Cosine scheduler for LR
+    if args.lr_scheduler == 'cosine':
+        scheduler = CosineAnnealingLR(optimizer, T_max=epochs, eta_min=0.00001)
+    else:
+        scheduler = None
 
     if not os.path.exists("models"):
         os.mkdir("models")
     models_path = "models"
 
-    for epoch in range(epochs):
+    for epoch in range(args.start_epoch, epochs):
+        epoch_start_time = time.time()
+
         for step, batch in enumerate(dataloader):
             optimizer.zero_grad()
             # print(batch[0].shape)
@@ -36,15 +56,30 @@ def main(args):
             loss = diffusion.get_loss(model, batch, t)
             loss.backward()
             optimizer.step()
+        
+        epoch_end_time = time.time()
+        epoch_duration = epoch_end_time - epoch_start_time
+        remaining_time = (epochs - epoch - 1) * epoch_duration
+        current_lr = optimizer.param_groups[0]['lr']
 
-            if epoch % 100 == 0 and step == 0:
-                print(f"Epoch {epoch} | step {step:03d} Loss: {loss.item()} ")
-                diffusion.sample_plot_image(model, epoch)
-                torch.save(model.state_dict(), os.path.join(models_path, str(epoch) + ".pth"))
+        if epoch % 1 == 0:  # for debugging
+            print(
+                f"Epoch {epoch} | Loss: {loss.item():.4f} | "
+                f"Time per epoch: {epoch_duration:.2f}seconds | "
+                f"Remaining time: {remaining_time/3600:.2f}hours | "
+                f"Current LR: {current_lr:.5f}"
+            )
+            diffusion.sample_plot_image(model, epoch)
+            torch.save({
+                'epoch': epoch,
+                'model_state_dict': model.state_dict()
+            }, os.path.join(models_path, str(epoch) + ".pth"))
+        
+        if scheduler:
+            scheduler.step()  # Update the learning rate after each epoch
+
 
 if __name__ == '__main__':
-    import argparse
-
     parser = argparse.ArgumentParser(description='parameters')
     parser.add_argument('--device', default="cuda")
     parser.add_argument('--batch_size', default=128, type=int)
@@ -52,9 +87,26 @@ if __name__ == '__main__':
     parser.add_argument('--T', type=int, default=300)
     parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--dataset_folder', type=str, required=True)
-    parser.add_argument('--model_path', type=str, default=None)
     parser.add_argument('--num_workers', type=int, default=2)
+    parser.add_argument('--beta_schedule', type=str, default='linear', choices=['linear', 'cosine'], help='Beta schedule to use: "linear" or "cosine"')
+    parser.add_argument("--activation", type=str, default="relu", choices=["relu", "silu"], help="Activation function to use in the U-Net model (default: relu)")
+    parser.add_argument('--use_self_attention', action='store_true', help="Enable self-attention in the U-Net model")
+
+    parser.add_argument('--lr_scheduler', type=str, default=None, choices=['cosine'], help='Learning rate scheduler to use: "cosine"')
+    parser.add_argument('--resume_from', type=str, default=None, help="Resume training from a saved model")
     args = parser.parse_args()
-    print(args)
+    
+    if args.resume_from:
+        checkpoint = torch.load(args.resume_from)
+        args.start_epoch = checkpoint['epoch'] + 1
+    else:
+        args.start_epoch = 0
+
+
+    print("Experiment Hyperparameters:")
+    print('-' * 20)
+    for key, value in vars(args).items():
+        print(f"{key}: {value}")
+    print('-' * 20)
     main(args)
     
