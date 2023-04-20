@@ -8,13 +8,7 @@ stanford_cars/
 test_realtime/
 
 
-archive.zip
-pokemon-generation-one.zip
-diffusion_pokemon_test.out
-diffusion_pokemon.out
-error.err
-test_error.err
-
+*.zip
 *.out
 *.err
 *.sh

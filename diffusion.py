@@ -92,7 +92,7 @@ class Diffusion():
     #     return F.mse_loss(noise, noise_pred)
 
     @torch.no_grad()
-    def sample_timestep(self, model, x, t):
+    def sample_timestep(self, model, x, t, t_index):
         """
         Calls the model to predict the noise in the image and returns 
         the denoised image. 
@@ -105,12 +105,15 @@ class Diffusion():
         sqrt_recip_alphas_t = self.get_index_from_list(self.sqrt_recip_alphas, t, x.shape)
         
         # Call model (current image - noise prediction)
+        pred_noise = model(x, t)
+
         model_mean = sqrt_recip_alphas_t * (
-            x - betas_t * model(x, t) / sqrt_one_minus_alphas_cumprod_t
+            x - betas_t * pred_noise / sqrt_one_minus_alphas_cumprod_t
         )
+
         posterior_variance_t = self.get_index_from_list(self.posterior_variance, t, x.shape)
         
-        if t == 0:
+        if t_index == 0:
             return model_mean
         else:
             noise = torch.randn_like(x)
@@ -120,22 +123,21 @@ class Diffusion():
     def sample_plot_image(self, model, epoch="sample", train="train"):
         # Sample noise
         img_size = self.args.img_size
-        img = torch.randn((1, 3, img_size, img_size), device="cuda")
+        img = torch.randn((1, 3, img_size, img_size), device=self.args.device)
         plt.figure(figsize=(15,15))
         plt.axis('off')
         num_images = 10
         stepsize = int(self.args.T/num_images)
 
         for i in range(0,self.args.T)[::-1]:
-            t = torch.full((1,), i, device="cuda", dtype=torch.long)
-            img = self.sample_timestep(model, img, t)
+            t = torch.full((1,), i, device=self.args.device, dtype=torch.long)
+            img = self.sample_timestep(model, img, t, i)
             if i % stepsize == 0:
                 plt.subplot(1, num_images, math.floor(i/stepsize+1))
                 show_tensor_image(img.detach().cpu())
         img_folder = os.path.join("result", train) + "/"
         if not os.path.exists(img_folder):
             Path(img_folder).mkdir(parents=True, exist_ok=True)
-            # os.makedirs(img_folder)
         plt.savefig(os.path.join(img_folder, str(epoch)+".png"))
         plt.close()
 
