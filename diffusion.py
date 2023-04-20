@@ -120,14 +120,14 @@ class Diffusion():
     def sample_plot_image(self, model, epoch="sample", train="train"):
         # Sample noise
         img_size = self.args.img_size
-        img = torch.randn((1, 3, img_size, img_size), device="cuda")
+        img = torch.randn((1, 3, img_size, img_size), device=self.args.device)
         plt.figure(figsize=(15,15))
         plt.axis('off')
         num_images = 10
         stepsize = int(self.args.T/num_images)
 
         for i in range(0,self.args.T)[::-1]:
-            t = torch.full((1,), i, device="cuda", dtype=torch.long)
+            t = torch.full((1,), i, device=self.args.device, dtype=torch.long)
             img = self.sample_timestep(model, img, t)
             if i % stepsize == 0:
                 plt.subplot(1, num_images, math.floor(i/stepsize+1))
