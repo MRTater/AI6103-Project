@@ -5,6 +5,7 @@ result/
 __pycache__/
 dataset/
 car/
+saved_models/
 
 
 archive.zip
