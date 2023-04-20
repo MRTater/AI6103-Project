@@ -36,8 +36,8 @@ def main(args):
             scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
     else:
         args.start_epoch = 0
+        model.to(args.device)
 
-    model.to(args.device)
     print("Num params: ", sum(p.numel() for p in model.parameters()))
     # print(model)
     
