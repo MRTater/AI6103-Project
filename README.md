@@ -35,13 +35,13 @@ python resize.py
 ```shell
 python train.py --batch_size 128 --img_size 64 --epochs 500 --T 300 --dataset_folder "YourPathToTheDatasetFolder"
 ```
-Only ```--dataset_folder``` is required. More parameter setting details can found in ```train.py```.
+Only ```--dataset_folder``` is required. More parameter setting details can be found in ```train.py```.
 
 ## Inferencing
 ```shell
 python test.py --img_size 64 --model_path "YourPathToTheModel"
 ```
-Only ```--model_path``` is required. More parameter setting details can found in ```test.py```.
+Only ```--model_path``` is required. More parameter setting details can be found in ```test.py```.
 
 ## Fid Computing
 ```shell
