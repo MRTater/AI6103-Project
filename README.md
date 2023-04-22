@@ -5,7 +5,7 @@ Repo for AI6103 project. WIP.
 ## Dataset
 ~~[Pokemon Dataset](https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset?resource=download) by KVPRATAMA~~  
 ~~[Pokemon Dataset](https://www.kaggle.com/datasets/thedagger/pokemon-generation-one) by HARSHITDWIVEDI~~
-- [Face Dataset](https://www.kaggle.com/datasets/selfishgene/synthetic-faces-high-quality-sfhq-part-1)
+[Face Dataset](https://www.kaggle.com/datasets/selfishgene/synthetic-faces-high-quality-sfhq-part-1)
 
 ## DataLoader
 ```text
