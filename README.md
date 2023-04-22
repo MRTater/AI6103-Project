@@ -42,3 +42,8 @@ Only ```--dataset_folder``` is required. More parameter setting details can foun
 python test.py --img_size 64 --model_path "YourPathToTheModel"
 ```
 Only ```--model_path``` is required. More parameter setting details can found in ```test.py```.
+
+## Fid Computing
+```shell
+python -m pytorch_fid --device cuda:0 OriginalImageFolder GenerativeImageFolder
+```
