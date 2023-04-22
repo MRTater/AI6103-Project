@@ -30,7 +30,7 @@ if __name__ == '__main__':
     parser.add_argument('--beta_schedule', type=str, default='linear', choices=['linear', 'cosine'], help='Beta schedule to use: "linear" or "cosine"')
     parser.add_argument('--use_self_attention', action='store_true', help="Enable self-attention in the U-Net model")
     parser.add_argument('--use_skip_connection', action='store_true', help="Enable skip-connection blockwise")
-    parser.add_argument('--model_path', type=str, default=None, help="The model used to inference")
+    parser.add_argument('--model_path', type=str, default=None, help="The model used to inference",required=True)
     args = parser.parse_args()
     
     print("Inference Hyperparameters:")
