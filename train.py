@@ -66,7 +66,7 @@ def main(args):
                 f"Remaining time: {remaining_time/3600:.2f}hours | "
                 f"Current LR: {current_lr:.5f}"
             )
-            diffusion.sample_plot_image(model, epoch)
+            diffusion.plot_sample_images(model, epoch)
         if epoch % 50 == 0:  # for saving models
             torch.save({
                 'epoch': epoch,
