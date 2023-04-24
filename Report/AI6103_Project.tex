@@ -22,6 +22,8 @@
 \usepackage{amsmath}
 \usepackage{xcolor}
 \usepackage{lettrine}
+% \usepackage{hyperref}
+
 
 %
 % These are are recommended to typeset listings but not required. See the subsubsection on listing. Remove this block if you don't have listings in your paper.
@@ -74,9 +76,11 @@
 
 \maketitle
 
+\urldef{\myurl}\url{https://github.com/MRTater/AI6103-Project}
 % INTRODUCTION
 \begin{abstract}
-In this Project, we reproduce the model from the paper \textit{Denoising Diffusion Probabilistic Models}, which presents an innovative image denoising approach employing diffusion processes. The method iteratively denoises images, leveraging a probabilistic model to estimate noise distribution and enable effective noise reduction. We implement the DDPM and train the model for the task of human face image synthesis. The project code is available at \textcolor{blue}{https://github.com/MRTater/AI6103-Project}.
+In this Project, we reproduce the model from the paper \textit{Denoising Diffusion Probabilistic Models}, which presents an innovative image denoising approach employing diffusion processes. The method iteratively denoises images, leveraging a probabilistic model to estimate noise distribution and enable effective noise reduction. We implement the DDPM and train the model for the task of human face image synthesis. The project code is available at link below:\\
+\myurl.
 \end{abstract}
 
 \section{Introduction}
@@ -121,7 +125,7 @@ The method of sampling noises is described by Equation (2). It is the conditiona
 q\left(x_t \mid x_{t-1}\right)=N\left(x_t ; \sqrt{1-\beta_t} x_{t-1}, \beta_t I\right)
 \end{equation}
 
-Since the sum of Gaussian distributions is still a Gaussian distribution, as proven by Equation (3), given the set of betas, we can precompute various terms that will be employed in the forward diffusion process, such as the cumulative product of alphas ($\alpha^{cumprod}_t$), and 1 minus the cumulative product of alphas ($1-\alpha^{cumprod}_t$). These terms are utilized to control the variance and the noise introduced to the image at each timestep.
+Since the product of Gaussian distributions is still a Gaussian distribution, as proven by Equation (3)\cite{math}, given the set of betas, we can precompute various terms that will be employed in the forward diffusion process, such as the cumulative product of alphas ($\alpha^{cumprod}_t$), and 1 minus the cumulative product of alphas ($1-\alpha^{cumprod}_t$). These terms are utilized to control the variance and the noise introduced to the image at each timestep.
 \begin{equation}
 \begin{aligned}
 & \mathrm{q}\left(\mathrm{x}t \mid x{t-1}\right)=\mathcal{N}\left(x_t, \sqrt{1-\beta_t} x_{t-1}, \beta_t I\right) \\
@@ -204,13 +208,13 @@ Skip connections link corresponding downsampling and upsampling layers, propagat
 
 \begin{figure*}[htbp]
     \centering
-    \includegraphics[width=0.8\linewidth]{f3.png} % Adjust the width and image file name as needed
+    \includegraphics[width=0.82\linewidth]{f3.png} % Adjust the width and image file name as needed
     \caption{The SimpleUnet}
     \label{fig:figure3}
 \end{figure*}
 
 \subsection{Sinusoidal Position Embeddings}
-Incorporating temporal information is crucial in denoising diffusion probabilistic models (DDPM). To achieve this, we employ sinusoidal position embeddings, which provide a continuous and differentiable representation of time.
+Incorporating temporal information is crucial in denoising diffusion probabilistic models (DDPM). To achieve this, we employ sinusoidal position embeddings\cite{positional_encoding}, which provide a continuous and differentiable representation of time.
 
 Sinusoidal position embeddings are computed using the following formulae:
 \begin{equation}
@@ -227,7 +231,7 @@ The resulting sinusoidal embeddings as shown in Figure \ref{fig:figure8}, can be
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1.0\linewidth]{f8.png} % Adjust the width and image file name as needed
-    \caption{Position embeddings, T=300}
+    \caption{Position embeddings, d=300}
     \label{fig:figure8}
 \end{figure}
 
