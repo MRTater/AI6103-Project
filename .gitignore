@@ -7,12 +7,14 @@ dataset/
 stanford_cars/
 test_realtime/
 
-
 *.zip
 *.out
 *.err
 *.sh
+*.DS_Store
 
 moveimage.py
 *.yml
 *.zip
+
+diffusion_model.ipynb
