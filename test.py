@@ -17,7 +17,7 @@ def main(args):
     print("Model loaded")
     print(model)
 
-    diffusion.sample_plot_image(model, train="test")
+    diffusion.plot_sample_images(model, train="test")
     print("Test complete")
 
 if __name__ == '__main__':
