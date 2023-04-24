@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  24 APR 2023 11:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  24 APR 2023 15:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -355,9 +355,6 @@ Overfull \hbox (16.98274pt too wide) detected at line 135
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 138--140
 
  []
@@ -367,67 +364,65 @@ File: f1.png Graphic file (type png)
 <use f1.png>
 Package pdftex.def Info: f1.png  used on input line 159.
 (pdftex.def)             Requested size: 210.66821pt x 131.78928pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 165--168
-
- []
-
 [2 <./f5.png> <./f1.png>]
 <f2.png, id=24, 1101.11375pt x 217.81375pt>
 File: f2.png Graphic file (type png)
 <use f2.png>
-Package pdftex.def Info: f2.png  used on input line 177.
+Package pdftex.def Info: f2.png  used on input line 179.
 (pdftex.def)             Requested size: 210.66821pt x 41.67085pt.
 <f3.png, id=25, 1275.76625pt x 518.93875pt>
 File: f3.png Graphic file (type png)
 <use f3.png>
-Package pdftex.def Info: f3.png  used on input line 205.
-(pdftex.def)             Requested size: 263.33527pt x 107.11162pt.
+Package pdftex.def Info: f3.png  used on input line 207.
+(pdftex.def)             Requested size: 404.71353pt x 164.62265pt.
+<f8.png, id=26, 770.88pt x 287.1528pt>
+File: f8.png Graphic file (type png)
+<use f8.png>
+Package pdftex.def Info: f8.png  used on input line 229.
+(pdftex.def)             Requested size: 239.39438pt x 89.17418pt.
 
-Overfull \hbox (23.94089pt too wide) in paragraph at lines 205--206
- [][] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 226--227
-
- []
-
-[3 <./f2.png> <./f3.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 243--249
+Underfull \hbox (badness 10000) in paragraph at lines 235--236
 
  []
 
-
-Underfull \hbox (badness 1917) in paragraph at lines 243--249
-\OT1/ptm/m/n/10 1. Per-form batch train-ing with noisy im-ages $\OML/cmm/m/it/10 x[]$ \OT1/ptm/m/n/10 and
- []
-
+[3 <./f2.png>]
 <f4.jpg, id=31, 839.7774pt x 135.8676pt>
 File: f4.jpg Graphic file (type jpg)
 <use f4.jpg>
-Package pdftex.def Info: f4.jpg  used on input line 252.
-(pdftex.def)             Requested size: 210.66821pt x 34.0829pt.
-(./AI6103_Project.bbl
+Package pdftex.def Info: f4.jpg  used on input line 264.
+(pdftex.def)             Requested size: 227.64894pt x 36.82985pt.
+<f9.png, id=32, 2202.2275pt x 357.335pt>
+File: f9.png Graphic file (type png)
+<use f9.png>
+Package pdftex.def Info: f9.png  used on input line 270.
+(pdftex.def)             Requested size: 227.64894pt x 36.93513pt.
+ [4 <./f3.png> <./f8.png> <./f4.jpg> <./f9.png>]
+<f6.png, id=41, 416.2752pt x 327.3831pt>
+File: f6.png Graphic file (type png)
+<use f6.png>
+Package pdftex.def Info: f6.png  used on input line 327.
+(pdftex.def)             Requested size: 227.64894pt x 179.03719pt.
+<f7.jpg, id=42, 321.2pt x 321.2pt>
+File: f7.jpg Graphic file (type jpg)
+<use f7.jpg>
+Package pdftex.def Info: f7.jpg  used on input line 334.
+(pdftex.def)             Requested size: 212.47287pt x 212.47786pt.
+ [5 <./f6.png> <./f7.jpg>] (./AI6103_Project.bbl) [6
 
-Package natbib Warning: Empty `thebibliography' environment on input line 4.
-
-) [4
-
- <./f4.jpg>] (./AI6103_Project.aux) ) 
+] (./AI6103_Project.aux) ) 
 Here is how much of TeX's memory you used:
- 7166 strings out of 476025
- 114134 string characters out of 5790017
- 1870388 words of memory out of 5000000
- 27518 multiletter control sequences out of 15000+600000
- 538510 words of font info for 77 fonts, out of 8000000 for 9000
+ 7229 strings out of 476025
+ 115009 string characters out of 5790017
+ 1872388 words of memory out of 5000000
+ 27577 multiletter control sequences out of 15000+600000
+ 538824 words of font info for 78 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,10n,63p,724b,330s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on AI6103_Project.pdf (4 pages, 2474553 bytes).
+ 57i,10n,65p,941b,535s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on AI6103_Project.pdf (6 pages, 4498657 bytes).
 PDF statistics:
- 79 PDF objects out of 1000 (max. 8388607)
- 42 compressed objects within 1 object stream
+ 97 PDF objects out of 1000 (max. 8388607)
+ 49 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

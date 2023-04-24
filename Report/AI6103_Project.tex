@@ -82,7 +82,7 @@ In this Project, we reproduce the model from the paper \textit{Denoising Diffusi
 \section{Introduction}
 \lettrine[lines=2, findent=3pt, nindent=0pt]{\textbf{T}}{he} \textit{Denoising Diffusion Probabilistic Models} (DDPM) represents a significant advancement in generative modeling, introducing an approach based on diffusion processes for iterative denoising. This method has demonstrated state-of-the-art (SOTA) performance in various image processing tasks, including image synthesis, super-resolution, and inpainting, making it a versatile tool for diverse applications. Additionally, DDPM has inspired the development of other diffusion-based models, such as Stable Diffusion, further expanding its impact on the field.
 
-In this Project, we focus on reproducing the DDPM based on our understanding of the original paper. We adapt the network architecture to suit our limited computational resources without compromising performance. Furthermore, we incorporate strategies such as learning rate scheduling, skip connections, better activations, etc. to enhance model performance. Our implementation targets the task of human face image synthesis, utilizing the \textit{Synthetic Faces Dataset} to train the model.
+In this Project, we focus on reproducing the DDPM based on our understanding of the original paper. We adapt the network architecture to suit our limited computational resources without compromising performance. Furthermore, we incorporate strategies such as learning rate scheduling, skip connections, better activations, etc. to enhance model performance. Our implementation targets the task of human face image synthesis, utilizing the \textit{Synthetic Faces Dataset}\cite{david_beniaguev_2022} to train the model.
 
 \section{Background}
 Over the past few years, deep generative models have gained popularity due to their ability to learn complex data distributions, generate high-quality samples, and perform a wide range of tasks, such as image synthesis, inpainting, and translation. Examples of deep generative models include Variational Autoencoders (VAEs), Generative Adversarial Networks (GANs), and autoregressive models like PixelCNN.
@@ -102,7 +102,7 @@ We chose the Synthetic Faces High Quality (SFHQ) Part 1 dataset, as shown in Fig
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.88\linewidth]{f5.png} % Adjust the width and image file name as needed
-\caption{A preview of the forward diffusion process by time steps T}
+\caption{Preview of the Synthetic Faces dataset.}
 \label{fig:figure5}
 \end{figure}
 
@@ -162,20 +162,22 @@ The cosine beta schedule features a linear drop-off of $\bar{\alpha}_t$ in the m
 \end{figure}
 
 \subsection{Summary of the Forward Process}
-The forward diffusion process for a specific timestep $t$ can be described as follows: \\\\
-1. Sample Gaussian noise $\epsilon \sim \mathcal{N}(0, 1)$ with the same dimensions as the input image $x_0$. \\
-2. Compute the noisy image $x_t$ as Equation(4):
+The forward diffusion process for a specific timestep $t$ can be described as follows:
+\begin{enumerate}
+\item Sample Gaussian noise $\epsilon \sim \mathcal{N}(0, 1)$ with the same dimensions as the input image $x_0$.
+\item Compute the noisy image $x_t$ as Equation(4):
 \begin{equation}
-x_t = \sqrt{\alpha^{cumprod}_t} x_0 + \sqrt{1 - \alpha^{cumprod}_t} \epsilon,
+    x_t = \sqrt{\alpha^{cumprod}_t} x_0 + \sqrt{1 - \alpha^{cumprod}_t} \epsilon,
 \end{equation}
 \noindent where $\alpha^{cumprod}_t$ and $1 - \alpha^{cumprod}_t$ govern the mean and variance of the noise introduced to the image, respectively. The noisy image is then clamped to the range $[-1, 1]$ to ensure valid pixel values.
+\end{enumerate}
 
 The forward diffusion process is applied iteratively for all $T$ timesteps as shown in Figure \ref{fig:figure2}, producing a sequence of increasingly noisy images. During training, the DDPM model learns to invert this process by predicting the noise added at each timestep, enabling it to synthesize new images by denoising Gaussian noise in the later part.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.88\linewidth]{f2.png} % Adjust the width and image file name as needed
-    \caption{A preview of forward difuusion process by time steps T}
+    \caption{A preview of forward diffusion process by time steps T}
     \label{fig:figure2}
 \end{figure}
 
@@ -200,12 +202,12 @@ We use a simplified version of U-Net as shown in Figure \ref{fig:figure3}, named
 The SimpleUnet is initialized with customizable settings like activation function (ReLU or SiLU), self-attention, and skip connections.
 Skip connections link corresponding downsampling and upsampling layers, propagating detailed spatial information to reconstruct denoised images more accurately. Additionally, there are skip connections within the blocks themselves, allowing for better information flow. The architecture has 5 downsampling and upsampling layers, with channels reaching up to 1024 in the middle layers. This structure captures hierarchical input image representations, including both high-level and low-level features.
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
     \centering
-    \includegraphics[width=1.1\linewidth]{f3.png} % Adjust the width and image file name as needed
+    \includegraphics[width=0.8\linewidth]{f3.png} % Adjust the width and image file name as needed
     \caption{The SimpleUnet}
     \label{fig:figure3}
-\end{figure}
+\end{figure*}
 
 \subsection{Sinusoidal Position Embeddings}
 Incorporating temporal information is crucial in denoising diffusion probabilistic models (DDPM). To achieve this, we employ sinusoidal position embeddings, which provide a continuous and differentiable representation of time.
@@ -220,7 +222,14 @@ P(k, 2 i+1)=\cos \left(\frac{k}{n^{2 i / d}}\right)
 
 Where $P$ represents the position embedding matrix, $k$ is the time step, $n$ is a constant (typically 10000), $d$ is the dimensionality of the embeddings, and $i$ is an index that ranges from 0 to $\frac{d}{2} - 1$. These equations generate sine and cosine functions with different frequencies, effectively encoding temporal information within the embeddings.
 
-The resulting sinusoidal embeddings can be used within the DDPM, effectively encoding temporal information for the denoising process. The sinusoidal nature of these embeddings ensures that they can be easily combined with other representations, facilitating the learning process for the model.
+The resulting sinusoidal embeddings as shown in Figure \ref{fig:figure8}, can be used within the DDPM, effectively encoding temporal information for the denoising process. The sinusoidal nature of these embeddings ensures that they can be easily combined with other representations, facilitating the learning process for the model.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\linewidth]{f8.png} % Adjust the width and image file name as needed
+    \caption{Position embeddings, T=300}
+    \label{fig:figure8}
+\end{figure}
 
 \subsection{Loss Function}
 In the DDPM, the loss function is used to measure the discrepancy between the actual noise and the predicted noise at each timestep during training. Here, we present two different loss functions: L1 and L2.\\
@@ -240,23 +249,122 @@ In the DDPM, the loss function is used to measure the discrepancy between the ac
 During training, either the L1 or L2 loss can be used to optimize the model, depending on the desired denoising characteristics.
 
 \subsection{Summary of the Backward Process}
-The parametrized backward process as shown in Figure \ref{fig:figure4}, in DDPM sythesize the original image $x_0$ from the noisy image $x_T$. The process involves a simplified U-Net architecture and sinusoidal position embeddings for encoding temporal information.\\\\
-1. Perform batch training with noisy images $x_T$ and corresponding time steps.\\
-2. Encode time steps using sinusoidal position embeddings to generate a position embedding matrix $P$.\\
-3. Process input images using the SimpleUnet and feed in with the sinusoidal position embeddings to incorporate temporal information in the denoising process.\\
-4. Iterate through the training process, adjusting model parameters to minimize the loss function and refining the denoising capability.\\
-5. By following these steps, the parametrized backward process effectively synthesizes the original images from the noisy counterparts, improving the performance of the denoising diffusion probabilistic model.
+The parametrized backward process as shown in Figure \ref{fig:figure4}, in DDPM sythesize the original image $x_0$ from the noisy image $x_T$. The process involves a simplified U-Net architecture and sinusoidal position embeddings for encoding temporal information.
+\begin{enumerate}
+\item Perform batch training with noisy images $x_T$ and corresponding time steps.
+\item Encode time steps using sinusoidal position embeddings to generate a position embedding matrix $P$.
+\item Process input images using the SimpleUnet and feed in with the sinusoidal position embeddings to incorporate temporal information in the denoising process.
+\item Iterate through the training process, adjusting model parameters to minimize the loss function and refining the denoising capability.
+\item By following these steps, the parametrized backward process effectively synthesizes the original images from the noisy counterparts, improving the performance of the denoising diffusion probabilistic model.
+\end{enumerate}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.88\linewidth]{f4.jpg} % Adjust the width and image file name as needed
-    \caption{64*64, T=300, linear, sythesized image via backward process}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{f4.jpg}
+        \caption{64*64, T=300, linear}
+        \label{fig:figure4a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{f9.png} % Replace with the correct file name
+        \caption{64*64, T=300, cosine} % Replace with the correct caption
+        \label{fig:figure4b}
+    \end{subfigure}
+    \caption{Comparison of synthesized images via backward process with different beta scheduler: (a) linear; (b) consine.}
     \label{fig:figure4}
 \end{figure}
 
+
+\section{Metric}
+Considering that our project focuses on the task of image synthesis, we choose the \textit{Fréchet Inception Distance} (FID) as the metric for our task. FID is a widely-used metric for evaluating the quality of generated images. First introduced by Martin Heusel et al. in 2017, FID measures the similarity between distributions of generated and real images in the feature space of a pre-trained Inception-v3 neural network.
+
+The principle behind FID for calculating image distance can be summarized as follows: given that a random variable follows a Gaussian distribution, the distribution can be determined by its mean and variance. Two distributions are considered identical if their means and variances are the same. In the case of multidimensional distributions, the covariance matrix is used to measure the correlation between dimensions. Thus, FID employs the mean and covariance matrix to calculate the distance between two distributions.
+
+The FID score can be calculated using the following steps:
+\begin{enumerate}
+\item Extract feature vectors from the real and generated images using a pre-trained Inception-v3 neural network.
+\item Calculate the mean and covariance of the feature vectors separately for the real and generated images.
+\item Compute the Fréchet distance between the two distributions.
+\end{enumerate}
+
+The mathematical formula for FID is expressed as Equation 11. Here, $\mu_x$ and $\mu_y$ represent the feature-wise means of the real and generated images, and $\Sigma_x$ and $\Sigma_y$ denote the covariance matrices of the real and generated feature vectors.
+\begin{equation}
+\operatorname{FID}(x, g)=\left|\mu_x-\mu_g\right|_2^2+\operatorname{Tr}\left(\Sigma_x+\Sigma_g-2\left(\Sigma_x \Sigma_g\right)^{\frac{1}{2}}\right)
+\end{equation}
+
+By improving the FID score, our model aims to generate images that are more similar to the real images in terms of their feature distributions, resulting in higher quality synthesized images.
+
+\section{Experiments}
+For all experiments, we set $T = 300$. We chose forward process variances as constants, increasing linearly from $\beta_1=10^{-4}$ to $\beta_T=0.02$, consistent with the original paper's settings. The size of the sampled images is $64 \times 64$.
+
+We employed a U-Net backbone as the primary network, illustrated in Figure \ref{fig:figure3}. Parameters are shared across time, specified to the network using sinusoidal position embeddings from the Transformer architecture.
+
+In addition, we implemented a cosine $\beta$ schedule for further investigation of the diffusion model.
+
+Due to computational constraints, we omitted the self-attention layer as it was deemed too computationally expensive.
+
+\subsection{Sampling Process}
+The sampling process in our experiments involves reversing the diffusion process. By starting with pure noise as input, the model iteratively removes noise until a realistic image is generated. In the context of the diffusion model, the sampling process is essentially equivalent to denoising.
+
+We sampled 64 $\times$ 64 images using our diffusion model in our experiments. Our implementation achieved a generation speed of 25.7 seconds per batch, with each batch containing 128 images. Table \ref{tab:FID} presents the FID scores on the Synthetic Faces High Quality (SFHQ) part 1 dataset, where the FID score decreases with the number of training epochs. Figure \ref{fig:figure7} illustrates the loss decreasing with the number of training epochs, indicating that our model's ability to generate high-quality images improves as training progresses. Some generated results are showcased in Figure \ref{fig:high}.
+
+\begin{table}[t]
+\caption{SFHQ Results, measured with FID}
+\label{tab:FID}
+\centering
+\begin{tabular}{c|c}
+\textbf{Epochs} & \textbf{FID} \\
+\hline
+        200  & 233.36 \\
+        300  & 220.25 \\
+        450 & 198.03
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.45\textwidth]{f6.png} % Adjust the width and image file name as needed
+    \caption{Loss vs Epoch, T=300}
+    \label{fig:figure7}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.42\textwidth]{f7.jpg}
+    \caption{SFHQ samples, FID=198.03}
+    \label{fig:high}
+\end{figure}
+
+% \subsection{$\beta$ Schedule}
+% The forward variances are a sequence of linearly increasing constants from $\beta_1=10^{-4}$ to $\beta_T=0.02$. We perform both linear and cosine $\beta$ schedules to investigate their impact on the model's performance. 
+
+% We set the maximum value of $\beta$ for the cosine schedule to be the same as that for the linear schedule. Our results showed that the cosine schedule outperformed the linear schedule in terms of sample quality and training stability. Specifically, the cosine schedule produced lower FID scores compared to the linear schedule.
+
+% In conclusion, we found that the cosine $\beta$ schedule is a more effective approach for training our diffusion model than the linear schedule. Its smoother and more gradual transition between values provides improved performance and stability during training.
+
+\subsection{Result Analysis}
+Our model was only able to generate images with an FID score of around 200, which is less realistic than the results reported in the original paper. Moreover, some noise and color jittering can be observed in the generated images, indicating that the model's denoising ability could be further improved. There are several factors that might have negatively impacted our model's performance.
+
+One such factor is that, in contrast to the original paper, which employed CelebA-HQ models with 114 million parameters \cite{2020denoising}, we utilized a much shallower network consisting of only 62 million parameters. Shallower networks, with fewer layers and parameters, can constrain the model's learning ability. In the context of our diffusion model, this means that the model may exhibit inferior performance in learning noise distributions, thereby generating lower-quality images. Self-attention layers facilitate the model's focus on crucial information and relationships, which can enhance the accuracy of the diffusion process. Eliminating self-attention layers may impair the model's capacity to capture features of noise distribution and the relationships within different feature maps, ultimately diminishing the model's denoising ability.
+
+Furthermore, we opted for a smaller value of $T = 300$, as opposed to the original paper's $T = 1000$ \cite{2020denoising}. Although this choice facilitated training, it adversely affected the generation process. Employing a smaller T value can impact the diffusion results in several ways:
+
+\begin{itemize}
+\item \textbf{Reduced Quality}. Using a smaller T value truncates the diffusion process, leading to lower-quality image or data generation. The resulting images or data may contain artifacts or appear blurry, which might be undesirable in certain applications.
+\item \textbf{Limited Detail}. A smaller T value also restricts the amount of detail in the generated images or data. Consequently, the generated images or data may lack fine-grained detail compared to those produced with a larger T value.
+\item \textbf{Limited Diversity}. The diversity of the generated images or data might also be compromised when using a smaller T value. Images or data generated with a smaller T value may be less diverse and exhibit a narrower range of features or characteristics.
+\end{itemize}
+
+Additionally, we selected a relatively modest epoch setting, which could have potentially affected the model's performance. Initially, we assumed that the epoch settings would not significantly influence the experiment's outcome beyond a certain timestep (200 in our experiment), considering that the loss remained relatively stable. However, upon examining the results, we observed that the FID of the generated images varied considerably compared to the change in loss, suggesting that longer epochs might be necessary to optimize the model's performance. This could be attributed to the limited learning capacity of our model.
+
+In summary, our model's ability to generate realistic images was limited, with generated images only attaining an FID score of approximately 200 and exhibiting noise and color jittering. Factors that adversely affected the model's performance included using a shallower network with fewer parameters than the original paper, a smaller T value, and a relatively modest epoch setting.
+
+\section{Conclusion}
+In summary, our reimplementation of the DDPM has generated image samples comparable to those in the original paper, demonstrating its effectiveness as a powerful generative model. Although our implementation was adapted to accommodate limited computational resources, it has underscored the significant potential of the DDPM for generative tasks. Furthermore, recent advances such as Stable Diffusion have bolstered the performance of diffusion-based models in this domain, highlighting the potential of incorporating DDPM into various generative models and machine learning systems. As research into DDPM's capabilities progresses, we expect to uncover novel applications and deepen our understanding of this promising approach, paving the way for further advancements in the field.
+
 \bibliography{aaai23}
-% https://www.youtube.com/watch?v=a4Yfz2FxXiY&t=983s
-% https://machinelearningmastery.com/the-transformer-positional-encoding-layer-in-keras-part-2/
+
 \end{document}
 
 

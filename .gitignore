@@ -18,3 +18,4 @@ moveimage.py
 *.zip
 
 diffusion_model.ipynb
+pe.py
