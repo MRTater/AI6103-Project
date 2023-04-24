@@ -249,7 +249,7 @@ In the DDPM, the loss function is used to measure the discrepancy between the ac
 During training, either the L1 or L2 loss can be used to optimize the model, depending on the desired denoising characteristics.
 
 \subsection{Summary of the Backward Process}
-The parametrized backward process as shown in Figure \ref{fig:figure4}, in DDPM sythesize the original image $x_0$ from the noisy image $x_T$. The process involves a simplified U-Net architecture and sinusoidal position embeddings for encoding temporal information.
+The parametrized backward process in DDPM sythesize the original image $x_0$ from the noisy image $x_T$. The process involves a simplified U-Net architecture and sinusoidal position embeddings for encoding temporal information.
 \begin{enumerate}
 \item Perform batch training with noisy images $x_T$ and corresponding time steps.
 \item Encode time steps using sinusoidal position embeddings to generate a position embedding matrix $P$.
@@ -257,24 +257,6 @@ The parametrized backward process as shown in Figure \ref{fig:figure4}, in DDPM 
 \item Iterate through the training process, adjusting model parameters to minimize the loss function and refining the denoising capability.
 \item By following these steps, the parametrized backward process effectively synthesizes the original images from the noisy counterparts, improving the performance of the denoising diffusion probabilistic model.
 \end{enumerate}
-
-\begin{figure}[htbp]
-    \centering
-    \begin{subfigure}{0.45\textwidth}
-        \includegraphics[width=\textwidth]{f4.jpg}
-        \caption{64*64, T=300, linear}
-        \label{fig:figure4a}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.45\textwidth}
-        \includegraphics[width=\textwidth]{f9.png} % Replace with the correct file name
-        \caption{64*64, T=300, cosine} % Replace with the correct caption
-        \label{fig:figure4b}
-    \end{subfigure}
-    \caption{Comparison of synthesized images via backward process with different beta scheduler: (a) linear; (b) consine.}
-    \label{fig:figure4}
-\end{figure}
-
 
 \section{Metric}
 Considering that our project focuses on the task of image synthesis, we choose the \textit{Fréchet Inception Distance} (FID) as the metric for our task. FID is a widely-used metric for evaluating the quality of generated images. First introduced by Martin Heusel et al. in 2017, FID measures the similarity between distributions of generated and real images in the feature space of a pre-trained Inception-v3 neural network.
@@ -310,8 +292,6 @@ The sampling process in our experiments involves reversing the diffusion process
 We sampled 64 $\times$ 64 images using our diffusion model in our experiments. Our implementation achieved a generation speed of 25.7 seconds per batch, with each batch containing 128 images. Table \ref{tab:FID} presents the FID scores on the Synthetic Faces High Quality (SFHQ) part 1 dataset, where the FID score decreases with the number of training epochs. Figure \ref{fig:figure7} illustrates the loss decreasing with the number of training epochs, indicating that our model's ability to generate high-quality images improves as training progresses. Some generated results are showcased in Figure \ref{fig:high}.
 
 \begin{table}[t]
-\caption{SFHQ Results, measured with FID}
-\label{tab:FID}
 \centering
 \begin{tabular}{c|c}
 \textbf{Epochs} & \textbf{FID} \\
@@ -320,6 +300,8 @@ We sampled 64 $\times$ 64 images using our diffusion model in our experiments. O
         300  & 220.25 \\
         450 & 198.03
 \end{tabular}
+\caption{SFHQ Results, measured with FID}
+\label{tab:FID}
 \end{table}
 
 \begin{figure}[htbp]
@@ -331,17 +313,51 @@ We sampled 64 $\times$ 64 images using our diffusion model in our experiments. O
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.42\textwidth]{f7.jpg}
+    \includegraphics[width=0.45\textwidth]{f7.jpg}
     \caption{SFHQ samples, FID=198.03}
     \label{fig:high}
 \end{figure}
 
-% \subsection{$\beta$ Schedule}
-% The forward variances are a sequence of linearly increasing constants from $\beta_1=10^{-4}$ to $\beta_T=0.02$. We perform both linear and cosine $\beta$ schedules to investigate their impact on the model's performance. 
+\subsection{Beta Scheduler}
+For our experiments, we employed both linear and cosine $\beta$ schedules to investigate their impact on the model's performance.
 
-% We set the maximum value of $\beta$ for the cosine schedule to be the same as that for the linear schedule. Our results showed that the cosine schedule outperformed the linear schedule in terms of sample quality and training stability. Specifically, the cosine schedule produced lower FID scores compared to the linear schedule.
+Our results revealed that the cosine schedule outperformed the linear schedule in terms of sample quality and training stability, as illustrated in Figure \ref{fig:figure4}. Specifically, the cosine schedule yielded lower FID scores compared to the linear schedule.
 
-% In conclusion, we found that the cosine $\beta$ schedule is a more effective approach for training our diffusion model than the linear schedule. Its smoother and more gradual transition between values provides improved performance and stability during training.
+In conclusion, we determined that the cosine $\beta$ schedule is a more effective approach for training our diffusion model than the linear schedule. Its smoother and more gradual transition between values facilitates enhanced performance and stability during the training process.
+
+\subsection{Activation Function}
+We conducted experiments to investigate the impact of two different activation functions on the performance of our model: SiLU and ReLU as shown in Table \ref{tab:act}.
+
+Our results indicate that the choice of activation function does not significantly influence the model's performance. Specifically, we observed that employing SiLU as the activation function resulted in a slight improvement in the model's accuracy, while ReLU demonstrated a marginally better convergence speed.
+
+\begin{table}[t]
+    \centering
+    \begin{tabular}{c|c}
+    \textbf{Activations} & \textbf{FID} \\
+    \hline
+            SILU  & 233.36 \\
+            RELU  & 235.13
+    \end{tabular}
+    \caption{Comparison between activations, measured by FID, epoch=200}
+    \label{tab:act}
+    \end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{f4.jpg}
+        \caption{64*64, T=300, linear, FID=237}
+        \label{fig:figure4a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{f9.png} % Replace with the correct file name
+        \caption{64*64, T=300, cosine, FID=220.25} % Replace with the correct caption
+        \label{fig:figure4b}
+    \end{subfigure}
+    \caption{Comparison of synthesized images via backward process with different beta scheduler: (a) linear; (b) consine.}
+    \label{fig:figure4}
+\end{figure}
 
 \subsection{Result Analysis}
 Our model was only able to generate images with an FID score of around 200, which is less realistic than the results reported in the original paper. Moreover, some noise and color jittering can be observed in the generated images, indicating that the model's denoising ability could be further improved. There are several factors that might have negatively impacted our model's performance.

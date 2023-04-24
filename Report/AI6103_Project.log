@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  24 APR 2023 15:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  24 APR 2023 16:26
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -385,41 +385,41 @@ Underfull \hbox (badness 10000) in paragraph at lines 235--236
 
  []
 
-[3 <./f2.png>]
-<f4.jpg, id=31, 839.7774pt x 135.8676pt>
-File: f4.jpg Graphic file (type jpg)
-<use f4.jpg>
-Package pdftex.def Info: f4.jpg  used on input line 264.
-(pdftex.def)             Requested size: 227.64894pt x 36.82985pt.
-<f9.png, id=32, 2202.2275pt x 357.335pt>
-File: f9.png Graphic file (type png)
-<use f9.png>
-Package pdftex.def Info: f9.png  used on input line 270.
-(pdftex.def)             Requested size: 227.64894pt x 36.93513pt.
- [4 <./f3.png> <./f8.png> <./f4.jpg> <./f9.png>]
-<f6.png, id=41, 416.2752pt x 327.3831pt>
+[3 <./f2.png>] [4 <./f3.png> <./f8.png>]
+<f6.png, id=37, 416.2752pt x 327.3831pt>
 File: f6.png Graphic file (type png)
 <use f6.png>
-Package pdftex.def Info: f6.png  used on input line 327.
+Package pdftex.def Info: f6.png  used on input line 309.
 (pdftex.def)             Requested size: 227.64894pt x 179.03719pt.
-<f7.jpg, id=42, 321.2pt x 321.2pt>
+<f7.jpg, id=38, 321.2pt x 321.2pt>
 File: f7.jpg Graphic file (type jpg)
 <use f7.jpg>
-Package pdftex.def Info: f7.jpg  used on input line 334.
-(pdftex.def)             Requested size: 212.47287pt x 212.47786pt.
- [5 <./f6.png> <./f7.jpg>] (./AI6103_Project.bbl) [6
+Package pdftex.def Info: f7.jpg  used on input line 316.
+(pdftex.def)             Requested size: 227.64894pt x 227.6566pt.
+<f4.jpg, id=39, 839.7774pt x 135.8676pt>
+File: f4.jpg Graphic file (type jpg)
+<use f4.jpg>
+Package pdftex.def Info: f4.jpg  used on input line 348.
+(pdftex.def)             Requested size: 227.64894pt x 36.82985pt.
+<f9.png, id=40, 2202.2275pt x 357.335pt>
+File: f9.png Graphic file (type png)
+<use f9.png>
+Package pdftex.def Info: f9.png  used on input line 354.
+(pdftex.def)             Requested size: 227.64894pt x 36.93513pt.
 
-] (./AI6103_Project.aux) ) 
+Underfull \vbox (badness 1546) has occurred while \output is active []
+
+ [5 <./f6.png> <./f7.jpg> <./f4.jpg> <./f9.png>] (./AI6103_Project.bbl) [6] (./AI6103_Project.aux) ) 
 Here is how much of TeX's memory you used:
- 7229 strings out of 476025
- 115009 string characters out of 5790017
+ 7230 strings out of 476025
+ 115018 string characters out of 5790017
  1872388 words of memory out of 5000000
- 27577 multiletter control sequences out of 15000+600000
+ 27578 multiletter control sequences out of 15000+600000
  538824 words of font info for 78 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  57i,10n,65p,941b,535s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on AI6103_Project.pdf (6 pages, 4498657 bytes).
+Output written on AI6103_Project.pdf (6 pages, 4499615 bytes).
 PDF statistics:
  97 PDF objects out of 1000 (max. 8388607)
  49 compressed objects within 1 object stream
